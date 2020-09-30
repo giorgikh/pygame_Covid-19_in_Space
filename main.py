@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 import pygame
 import random
 import math
@@ -6,18 +5,21 @@ import os
 import sys
 from pygame import mixer
 
+SCRIPT_PATH = os.path.realpath(__file__)
+MAIN_DIR = os.path.dirname(SCRIPT_PATH).replace("\\", "/")
+
 global number_of_virus
 global level
 
 pygame.init()
 screen = pygame.display.set_mode((800, 600))
-background = pygame.image.load('/home/giorgi/projects/pygame_projects/Space_Game/background.png')
+background = pygame.image.load(MAIN_DIR + '/images/background.png')
 pygame.display.set_caption("CoronaVirus in Space")
-icon = pygame.image.load('/home/giorgi/projects/pygame_projects/Space_Game/icon.png')
+icon = pygame.image.load(MAIN_DIR + '/images/icon.png')
 pygame.display.set_icon(icon)
 
 # player
-player_image = pygame.image.load('/home/giorgi/projects/pygame_projects/Space_Game/spaceship.png')
+player_image = pygame.image.load(MAIN_DIR + '/images/spaceship.png')
 playerX = 370
 playerY = 530
 playerX_change = 0
@@ -33,7 +35,7 @@ virusY_change = []
 number_of_virus = 7
 
 for i in range(30):
-    virus_image.append(pygame.image.load('/home/giorgi/projects/pygame_projects/Space_Game/virus.png'))
+    virus_image.append(pygame.image.load(MAIN_DIR + '/images/virus.png'))
     virusX.append(random.randint(0, 730))
     virusY.append(random.randint(0, 330))
     virusX_change.append(10)
@@ -43,24 +45,28 @@ for i in range(30):
 # state :
 # Ready - hided
 # Fire - moving
-bullet_image = pygame.image.load('/home/giorgi/projects/pygame_projects/Space_Game/bullet.png')
+bullet_image = pygame.image.load(
+    MAIN_DIR + '/images/bullet.png')
 bulletX = 0
 bulletY = 530
 bulletY_change = 20
 bullet_state = "ready"
 
 # game over
-game_over_font = pygame.font.Font('/home/giorgi/projects/pygame_projects/Space_Game/bpg_glaho_sylfaen.ttf', 48)
+game_over_font = pygame.font.Font(
+    MAIN_DIR + '/font/bpg_glaho_sylfaen.ttf', 48)
 
 # score
 score = 0
-font = pygame.font.Font('/home/giorgi/projects/pygame_projects/Space_Game/bpg_glaho_sylfaen.ttf', 26)
+font = pygame.font.Font(
+    MAIN_DIR + '/font/bpg_glaho_sylfaen.ttf', 26)
 textX = 10
 textY = 10
 level = 1
 
 # background sound
-mixer.music.load('/home/giorgi/projects/pygame_projects/Space_Game/background.wav')
+mixer.music.load(
+    MAIN_DIR + '/sounds/background.wav')
 mixer.music.play(-1)
 
 restart_status = False
@@ -72,7 +78,8 @@ def game_over():
 
 
 def show_restart():
-    restart_click = font.render("რესტარტისთვის დააწექით Escape-ს", True, (0, 255, 0))
+    restart_click = font.render(
+        "რესტარტისთვის დააწექით Escape-ს", True, (0, 255, 0))
     screen.blit(restart_click, (250, 350))
 
 
@@ -110,7 +117,8 @@ def fire_bullet(x, y):
 
 
 def isCollision(virusX, virusY, bulletX, bulletY):
-    distance = math.sqrt((math.pow(virusX - bulletX, 2)) + (math.pow((virusY - bulletY), 2)))
+    distance = math.sqrt((math.pow(virusX - bulletX, 2)) +
+                         (math.pow((virusY - bulletY), 2)))
     if distance < 35:
         return True
     else:
@@ -133,7 +141,7 @@ while exit_status:
             if event.key == pygame.K_RIGHT:
                 playerX_change = 5
             if event.key == pygame.K_SPACE:
-                if bullet_state is "ready":
+                if bullet_state == "ready":
                     bulletX = playerX
                     bulletY = playerY
                     fire_bullet(bulletX, bulletY)
@@ -194,13 +202,13 @@ while exit_status:
         # collision
         collision = isCollision(virusX[i], virusY[i], bulletX, bulletY)
         if collision:
-            print("collision------", collision)
+            # print("collision------", collision)
             bulletY = playerY
             bullet_state = "ready"
             score += 10
             virusY[i] = random.randint(0, 330)
             virusX[i] = random.randint(0, 730)
-            print(score)
+            # print(score)
             if score > 300 and score < 600:
                 number_of_virus = 10
                 level = 2
@@ -222,7 +230,7 @@ while exit_status:
     if bulletY <= 0:
         bullet_state = "ready"
         bulletY = 480
-    if bullet_state is "fire":
+    if bullet_state == "fire":
         fire_bullet(bulletX, bulletY)
         bulletY -= bulletY_change
 
